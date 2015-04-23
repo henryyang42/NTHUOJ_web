@@ -11,6 +11,7 @@ from contest.models import *
 from group.models import *
 from problem.models import *
 
+DEBUG = 0
 
 def html2pure(html):
     text = ''
@@ -475,6 +476,8 @@ def migrate_submissions(cur):
 
     cur.execute("SELECT * FROM submissions")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -537,7 +540,9 @@ def migrate_submission_result_detail(cur):
 
     cur.execute("SELECT * FROM submission_result_detail")
     data = cur.fetchall()
-    data_len = len(data)
+    if DEBUG:
+        data = data[:100]
+    data_len = len(data) if not DEBUG else 100
     fail = 0
 
     for i, d in enumerate(data):
@@ -684,7 +689,7 @@ def problem_passrate():
         drawProgressBar('purify_problem', i, p_len, fail)
         try:
             p.total_submission = Submission.objects.filter(problem=p).count()
-            p.ac_count = Submission.objects.filter(problem=p, status=Problem.ACCEPTED).count()
+            p.ac_count = Submission.objects.filter(problem=p, status=Submission.ACCEPTED).count()
             p.save()
         except:
             fail += 1
@@ -693,18 +698,18 @@ def problem_passrate():
 
 
 migrate_dependency = [
-    # migrate_users,
-    # migrate_coowner,
-    # migrate_judge,
-    # migrate_admin,
-    # migrate_problems,
-    # migrate_testcases,
-    # migrate_contest,
-    # migrate_contest_coowner,
-    # migrate_pid_cid,
-    # migrate_clarification,
-    # migrate_submissions,
-    # migrate_submission_result_detail,
+    migrate_users,
+    migrate_coowner,
+    migrate_judge,
+    migrate_admin,
+    migrate_problems,
+    migrate_testcases,
+    migrate_contest,
+    migrate_contest_coowner,
+    migrate_pid_cid,
+    migrate_clarification,
+    migrate_submissions,
+    migrate_submission_result_detail,
     migrate_mapping,
     migrate_icpc_sid,
     migrate_uva_sid
@@ -714,7 +719,7 @@ funcs = [problem_html_cleanup, problem_passrate]
 
 
 con = None
-
+DEBUG = int(raw_input('DEBUG(1:on, 0:off):'))
 sql_user = raw_input('sql user: ')
 sql_pwd = raw_input('sql pwd:  ')
 sql_db = raw_input('sql db:   ')
