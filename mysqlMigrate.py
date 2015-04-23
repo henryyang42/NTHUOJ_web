@@ -27,13 +27,18 @@ def html2pure(html):
         return text
     return html
 
+def unescape(s):
+    s = HTMLPa rser.HTMLParser().unescape(s)
+    s = s.replace('&#039;', "'")
+    return s
+
 def purify(problem):
-    problem.pname = HTMLParser.HTMLParser().unescape(problem.pname)
-    problem.description = HTMLParser.HTMLParser().unescape(problem.description)
-    problem.input = HTMLParser.HTMLParser().unescape(problem.input)
-    problem.output = HTMLParser.HTMLParser().unescape(problem.output)
-    problem.sample_in = HTMLParser.HTMLParser().unescape(problem.sample_in)
-    problem.sample_out = HTMLParser.HTMLParser().unescape(problem.sample_out)
+    problem.pname = unescape(problem.pname)
+    problem.description = unescape(problem.description)
+    problem.input = unescape(problem.input)
+    problem.output = unescape(problem.output)
+    problem.sample_in = unescape(problem.sample_in)
+    problem.sample_out = unescape(problem.sample_out)
     problem.sample_in = html2pure(problem.sample_in)
     problem.sample_out = html2pure(problem.sample_out)
     problem.save()
@@ -698,6 +703,21 @@ def migrate_uva_sid(cur):
     print
     print 'Migrate uva_sid finished'
 
+
+def contest_cleanup():
+    contests = Contest.objects.all()
+    c_len = contests.count()
+    fail = 0
+
+    for i in range(c_len):
+        c = contests[i]
+        drawProgressBar('contest_cleanup', i, c_len, fail)
+        try:
+            c.cname = unescape(c.cname)
+            c.save()
+        except:
+            fail += 1
+            print 'contest_cleanup %s GG' % str(c)
 
 def problem_html_cleanup():
     problems = Problem.objects.all()
