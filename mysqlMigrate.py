@@ -91,6 +91,8 @@ def migrate_users(cur):
     cur.execute("SELECT * FROM users")
     data = cur.fetchall()
     data_len = len(data)
+
+    data_len = len(data)
     fail = 0
 
     for i, d in enumerate(data):
@@ -119,6 +121,8 @@ def migrate_coowner(cur):
 
     cur.execute("SELECT * FROM coowner")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -143,6 +147,8 @@ def migrate_judge(cur):
 
     cur.execute("SELECT * FROM judge")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -167,6 +173,8 @@ def migrate_admin(cur):
 
     cur.execute("SELECT * FROM admin")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -209,6 +217,8 @@ def migrate_problems(cur):
 
     cur.execute("SELECT * FROM problems")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -282,6 +292,8 @@ def migrate_testcases(cur):
 
     cur.execute("SELECT * FROM testcases")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -290,12 +302,15 @@ def migrate_testcases(cur):
         if not Problem.objects.filter(id=d[1]):
             fail += 1
             continue
-        testcase = Testcase.objects.create(
-            id=d[0],
-            problem=Problem.objects.get(id=d[1]),
-            time_limit=d[2],
-            memory_limit=d[3]
-        )
+        try:
+            testcase = Testcase.objects.create(
+                id=d[0],
+                problem=Problem.objects.get(id=d[1]),
+                time_limit=d[2],
+                memory_limit=d[3]
+            )
+        except:
+            fail += 1
 
     print
     print 'Migrate testcases finished with %d failure' % fail
@@ -320,6 +335,8 @@ def migrate_contest(cur):
 
     cur.execute("SELECT * FROM contest")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -359,6 +376,8 @@ def migrate_contest_coowner(cur):
 
     cur.execute("SELECT * FROM contest_coowner")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -387,6 +406,8 @@ def migrate_pid_cid(cur):
 
     cur.execute("SELECT * FROM pid_cid")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -423,6 +444,8 @@ def migrate_clarification(cur):
 
     cur.execute("SELECT * FROM clarification")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -542,7 +565,7 @@ def migrate_submission_result_detail(cur):
     data = cur.fetchall()
     if DEBUG:
         data = data[:100]
-    data_len = len(data) if not DEBUG else 100
+    data_len = len(data)
     fail = 0
 
     for i, d in enumerate(data):
@@ -552,7 +575,7 @@ def migrate_submission_result_detail(cur):
         cpu = d[4]
         memory = d[5]
         verdict = d[3]
-
+        errmsg = d[6]
         g = 0
         for V in SubmissionDetail.VERDICT_CHOICE:
             abbr = V[0]
@@ -573,6 +596,11 @@ def migrate_submission_result_detail(cur):
                 memory=memory,
                 verdict=verdict
             )
+
+            if errmsg:
+                sid.err_msg = errmsg
+                print errmsg
+                sid.save()
         except:
             fail += 1
     print
@@ -592,6 +620,8 @@ def migrate_mapping(cur):
 
     cur.execute("SELECT * FROM mapping")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -619,6 +649,8 @@ def migrate_icpc_sid(cur):
 
     cur.execute("SELECT * FROM icpc_sid")
     data = cur.fetchone()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
@@ -649,6 +681,8 @@ def migrate_uva_sid(cur):
 
     cur.execute("SELECT * FROM uva_sid")
     data = cur.fetchall()
+    if DEBUG:
+        data = data[:100]
     data_len = len(data)
     fail = 0
 
