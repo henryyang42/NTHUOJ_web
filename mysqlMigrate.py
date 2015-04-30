@@ -28,7 +28,7 @@ def html2pure(html):
     return html
 
 def unescape(s):
-    s = HTMLPa rser.HTMLParser().unescape(s)
+    s = HTMLParser.HTMLParser().unescape(s)
     s = s.replace('&#039;', "'")
     return s
 
@@ -49,7 +49,7 @@ def get_user(username):
     try:
         user = User.objects.get(username=username)
     except:
-        user = User.objects.get(username='boss')
+        user = User.objects.get(username='henry')
 
     return user
 
@@ -604,7 +604,7 @@ def migrate_submission_result_detail(cur):
 
             if errmsg:
                 sid.err_msg = errmsg
-                print errmsg
+                # print errmsg
                 sid.save()
         except:
             fail += 1
