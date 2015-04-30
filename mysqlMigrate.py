@@ -30,6 +30,7 @@ def html2pure(html):
 def unescape(s):
     s = HTMLParser.HTMLParser().unescape(s)
     s = s.replace('&#039;', "'")
+    s = s.replace('&amp;', '&')
     return s
 
 def purify(problem):
