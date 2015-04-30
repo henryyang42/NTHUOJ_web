@@ -20,8 +20,10 @@ SOFTWARE.
 $(document).ready(function() {
     add_attribute('id_coowner', 'class', 'searchable');
     add_attribute('id_problem', 'class', 'searchable');
+    hide('id_owner');
     enable_search();
     modify_label();
+    widen_multiselect();
 });
 
 function enable_search() {
@@ -66,7 +68,13 @@ function enable_search() {
     });
 }
 
+function widen_multiselect(){
+    add_attribute('ms-id_coowner','style','width:100%;');
+    add_attribute('ms-id_problem','style','width:100%;');
+}
+
 function modify_label(){
+    modify_html('[for=id_cname]','Contest name');
     modify_html('[for=id_freeze_time]','Freeze Time(mins):');
     modify_html('[for=id_start_time]','Start Time(YYYY-MM-DD hh:mm:ss):');
     modify_html('[for=id_end_time]','End Time(YYYY-MM-DD hh:mm:ss):');

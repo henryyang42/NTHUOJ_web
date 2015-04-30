@@ -30,7 +30,7 @@ from contest.scoreboard import User
 from contest.public_user import is_public_user
 
 from users.models import User
-from utils import user_info 
+from utils import user_info
 
 register = template.Library()
 
@@ -69,11 +69,11 @@ def can_reply(user, contest):
     return contest_info.can_reply(user,contest)
 register.filter("can_reply", can_reply)
 
-#check if user is anonymous user
+#check if user is coowner
 @register.filter
-def is_anonymous(user):
-    return user_info.is_anonymous(user)
-register.filter("is_anonymous", is_anonymous)
+def is_coowner(user, contest):
+    return contest_info.is_coowner(user, contest)
+register.filter("is_coowner", is_coowner)
 
 #check if user is judge or admin
 @register.filter
