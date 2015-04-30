@@ -41,6 +41,10 @@ def purify(problem):
     problem.sample_out = unescape(problem.sample_out)
     problem.sample_in = html2pure(problem.sample_in)
     problem.sample_out = html2pure(problem.sample_out)
+    problem.description = problem.description.replace('/problemdata', '/static/problemdata')
+    problem.input = problem.input.replace('/problemdata', '/static/problemdata')
+    problem.output = problem.output.replace('/problemdata', '/static/problemdata')
+
     problem.save()
 
 
@@ -231,8 +235,8 @@ def migrate_problems(cur):
         drawProgressBar('problems', i, data_len, fail)
         pname = d[1]
         description = d[5]
-        input = d[5]
-        output= d[6]
+        input = d[6]
+        output= d[7]
         sample_in = d[8]
         sample_out = d[9]
         if not pname:
@@ -604,7 +608,6 @@ def migrate_submission_result_detail(cur):
 
             if errmsg:
                 sid.err_msg = errmsg
-                # print errmsg
                 sid.save()
         except:
             fail += 1
